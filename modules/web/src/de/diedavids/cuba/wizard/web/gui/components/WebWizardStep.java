@@ -11,8 +11,8 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     private WizardStepAware stepComponent;
     private TabSheet.Tab tabComponent;
 
-    public WebWizardStep() {
 
+    public WebWizardStep() {
     }
 
     @Override
@@ -52,8 +52,7 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
         WizardStepAware wizardStepAware = getWizardStepAware();
         if (wizardStepAware != null) {
             return wizardStepAware.preClose();
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -67,8 +66,7 @@ public class WebWizardStep extends WebVBoxLayout implements WizardStep {
     private WizardStepAware getWizardStepAware() {
         if (ownComponents.size() > 0) {
             return (WizardStepAware) ownComponents.get(0);
-        }
-        else {
+        } else {
             return stepComponent;
         }
     }

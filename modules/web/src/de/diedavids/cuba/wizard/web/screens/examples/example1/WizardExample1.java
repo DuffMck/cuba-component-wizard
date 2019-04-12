@@ -1,7 +1,6 @@
 package de.diedavids.cuba.wizard.web.screens.examples.example1;
 
 import com.haulmont.cuba.gui.components.AbstractWindow;
-import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
@@ -14,9 +13,6 @@ public class WizardExample1 extends AbstractWindow {
     @Inject
     protected Wizard wizard;
 
-
-    @Inject
-    protected ComponentsFactory componentsFactory;
 
     @Override
     public void ready() {
@@ -43,7 +39,6 @@ public class WizardExample1 extends AbstractWindow {
         WizardStep wizardStep = wizard.addStep(3, "step4", wizardStepAware);
         wizardStep.setId("step4");
         wizardStep.setCaption("Step 4");
-        wizardStep.setIcon("font-icon:ADN");
 
 
     }

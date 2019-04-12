@@ -5,6 +5,7 @@ import de.diedavids.cuba.wizard.gui.components.AbstractWizardStep;
 public class Example1Step1 extends AbstractWizardStep {
 
     boolean preCloseTrue = true;
+
     @Override
     public boolean preClose() {
         preCloseTrue = !preCloseTrue;

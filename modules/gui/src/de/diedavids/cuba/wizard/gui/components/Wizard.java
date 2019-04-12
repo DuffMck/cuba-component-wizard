@@ -1,11 +1,12 @@
 package de.diedavids.cuba.wizard.gui.components;
 
 import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.components.Frame;
+import com.haulmont.cuba.gui.components.OrderedContainer;
 
 import java.util.EventObject;
+import java.util.function.Consumer;
 
-public interface Wizard extends Component.OrderedContainer,
+public interface Wizard extends OrderedContainer,
                 Component.HasIcon, Component.HasCaption {
     String NAME = "wizard";
 
@@ -14,8 +15,8 @@ public interface Wizard extends Component.OrderedContainer,
 
     WizardStep getStep(String stepId);
 
-    void addWizardStepChangeListener(WizardStepChangeListener listener);
-    void removeWizardStepChangeListener(WizardStepChangeListener listener);
+    void addWizardStepChangeListener(Consumer<WizardStepChangeEvent> eventConsumer);
+    void removeWizardStepChangeListener(Consumer<WizardStepChangeEvent> eventConsumer);
 
     void removeStep(String name);
 
@@ -50,8 +51,8 @@ public interface Wizard extends Component.OrderedContainer,
     }
 
 
-    void addWizardCancelClickListener(WizardCancelClickListener listener);
-    void removeWizardCancelClickListener(WizardCancelClickListener listener);
+    void addWizardCancelClickListener(Consumer<WizardCancelClickEvent> eventConsumer);
+    void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> eventConsumer);
 
     class WizardCancelClickEvent extends EventObject {
         public WizardCancelClickEvent(Wizard source) {
@@ -72,8 +73,8 @@ public interface Wizard extends Component.OrderedContainer,
 
 
 
-    void addWizardFinishClickListener(WizardFinishClickListener listener);
-    void removeWizardFinishClickListener(WizardFinishClickListener listener);
+    void addWizardFinishClickListener(Consumer<WizardFinishClickEvent> eventConsumer);
+    void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> eventConsumer);
 
     class WizardFinishClickEvent extends EventObject {
         public WizardFinishClickEvent(Wizard source) {

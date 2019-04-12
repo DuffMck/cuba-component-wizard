@@ -6,13 +6,14 @@ import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.BaseAction;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.web.gui.components.WebComponentsHelper;
-import com.haulmont.cuba.web.toolkit.ui.CubaCssActionsLayout;
+import com.haulmont.cuba.web.widgets.CubaCssActionsLayout;
 import de.diedavids.cuba.wizard.gui.components.Wizard;
 import com.haulmont.cuba.web.gui.components.WebCssLayout;
 import de.diedavids.cuba.wizard.gui.components.WizardStep;
 import de.diedavids.cuba.wizard.gui.components.WizardStepAware;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class WebWizard extends WebCssLayout implements Wizard {
 
@@ -79,35 +80,42 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
     @Override
-    public void addWizardStepChangeListener(WizardStepChangeListener listener) {
-        getEventRouter().addListener(WizardStepChangeListener.class, listener);
+    public void addWizardStepChangeListener(Consumer<WizardStepChangeEvent> eventConsumer) {
+        getEventHub().subscribe(WizardStepChangeEvent.class, eventConsumer);
+//        getEventRouter().addListener(WizardStepChangeListener.class, listener);
     }
 
     @Override
-    public void removeWizardStepChangeListener(WizardStepChangeListener listener) {
-        getEventRouter().removeListener(WizardStepChangeListener.class, listener);
-    }
-
-
-    @Override
-    public void addWizardCancelClickListener(WizardCancelClickListener listener) {
-        getEventRouter().addListener(WizardCancelClickListener.class, listener);
-    }
-
-    @Override
-    public void removeWizardCancelClickListener(WizardCancelClickListener listener) {
-        getEventRouter().removeListener(WizardCancelClickListener.class, listener);
+    public void removeWizardStepChangeListener(Consumer<WizardStepChangeEvent> eventConsumer) {
+        getEventHub().unsubscribe(WizardStepChangeEvent.class, eventConsumer);
+//        getEventRouter().removeListener(WizardStepChangeListener.class, listener);
     }
 
 
     @Override
-    public void addWizardFinishClickListener(WizardFinishClickListener listener) {
-        getEventRouter().addListener(WizardFinishClickListener.class, listener);
+    public void addWizardCancelClickListener(Consumer<WizardCancelClickEvent> eventConsumer) {
+//        getEventRouter().addListener(WizardCancelClickListener.class, listener);
+        getEventHub().subscribe(WizardCancelClickEvent.class, eventConsumer);
     }
 
     @Override
-    public void removeWizardFinishClickListener(WizardFinishClickListener listener) {
-        getEventRouter().removeListener(WizardFinishClickListener.class, listener);
+    public void removeWizardCancelClickListener(Consumer<WizardCancelClickEvent> eventConsumer) {
+//        getEventRouter().removeListener(WizardCancelClickListener.class, listener);
+        getEventHub().unsubscribe(WizardCancelClickEvent.class, eventConsumer);
+    }
+
+
+    @Override
+    public void addWizardFinishClickListener(Consumer<WizardFinishClickEvent> eventConsumer) {
+//        getEventRouter().addListener(WizardFinishClickListener.class, listener);
+        getEventHub().subscribe(WizardFinishClickEvent.class, eventConsumer);
+
+    }
+
+    @Override
+    public void removeWizardFinishClickListener(Consumer<WizardFinishClickEvent> eventConsumer) {
+//        getEventRouter().removeListener(WizardFinishClickListener.class, listener);
+        getEventHub().unsubscribe(WizardFinishClickEvent.class, eventConsumer);
     }
 
 
@@ -148,8 +156,8 @@ public class WebWizard extends WebCssLayout implements Wizard {
     }
 
     private void addWizardShortcutActions() {
-        layoutWrapper.addShortcutAction(new Component.ShortcutAction("CTRL-ALT-ARROW_RIGHT", shortcutTriggeredEvent -> nextAction.actionPerform(shortcutTriggeredEvent.getSource())));
-        layoutWrapper.addShortcutAction(new Component.ShortcutAction("CTRL-ALT-ARROW_LEFT", shortcutTriggeredEvent -> prevAction.actionPerform(shortcutTriggeredEvent.getSource())));
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_RIGHT", shortcutTriggeredEvent -> nextAction.actionPerform(shortcutTriggeredEvent.getSource())));
+        layoutWrapper.addShortcutAction(new ShortcutAction("CTRL-ALT-ARROW_LEFT", shortcutTriggeredEvent -> prevAction.actionPerform(shortcutTriggeredEvent.getSource())));
     }
 
     private boolean isStepChangedAllowed() {
@@ -223,8 +231,9 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     private void handleCancelClick() {
         Wizard.WizardCancelClickEvent event = new Wizard.WizardCancelClickEvent(this);
-        getEventRouter().fireEvent(WizardCancelClickListener.class,
-                Wizard.WizardCancelClickListener::cancelClicked, event);
+        getEventHub().publish(WizardCancelClickEvent.class, event);
+//        getEventRouter().fireEvent(WizardCancelClickListener.class,
+//                Wizard.WizardCancelClickListener::cancelClicked, event);
     }
 
     private Button createPrevBtn() {
@@ -253,8 +262,9 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
 
             Wizard.WizardStepChangeEvent wizardStepChangeEvent = new Wizard.WizardStepChangeEvent(this, prevStep, step);
-            getEventRouter().fireEvent(WizardStepChangeListener.class,
-                    Wizard.WizardStepChangeListener::stepChanged, wizardStepChangeEvent);
+            getEventHub().publish(WizardStepChangeEvent.class, wizardStepChangeEvent);
+//            getEventRouter().fireEvent(WizardStepChangeListener.class,
+//                    Wizard.WizardStepChangeListener::stepChanged, wizardStepChangeEvent);
 
         }
     }
@@ -294,8 +304,9 @@ public class WebWizard extends WebCssLayout implements Wizard {
 
     private void handleFinishClick() {
         Wizard.WizardFinishClickEvent finishClickEvent = new Wizard.WizardFinishClickEvent(this);
-        getEventRouter().fireEvent(WizardFinishClickListener.class,
-                Wizard.WizardFinishClickListener::finishClicked, finishClickEvent);
+        getEventHub().publish(WizardFinishClickEvent.class, finishClickEvent);
+//        getEventRouter().fireEvent(WizardFinishClickListener.class,
+//                Wizard.WizardFinishClickListener::finishClicked, finishClickEvent);
     }
 
     private boolean currentTabIsLastTab() {
@@ -382,7 +393,7 @@ public class WebWizard extends WebCssLayout implements Wizard {
         tabList.add(index, tab);
         tabIndexByName.put(name, index);
         tab.setCaption(wizardStep.getCaption());
-
+        currentStep = wizardStep;
 
         if (tabListHasOnlyThisTab(tab)) {
             enableTab(tab);
